@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat May  8 20:28:10 2021
-
-@author: georg
-"""
-
 import unittest
 from pycm import modem, source, channel
 from pycm.modem import ASK

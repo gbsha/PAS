@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May 18 16:41:00 2021
-
-@author: georg
-"""
-
 from pycm import source, channel, modem, stats, fec
 import numpy as np
 

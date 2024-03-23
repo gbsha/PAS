@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 10 07:08:45 2021
-
-@author: georg
-"""
 import numpy as np
 from pycm import utils
 import sympy

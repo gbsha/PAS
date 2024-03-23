@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat May  8 20:23:56 2021
-
-@author: georg
-"""
 import numpy as np
 
 def awgn(x, noise_power, seed=None):

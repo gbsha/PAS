@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  4 17:47:05 2021
-
-@author: georg
-"""
 import time
 import numpy as np
 from pycm import source, modem, channel

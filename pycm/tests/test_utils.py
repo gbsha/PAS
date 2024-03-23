@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat May  8 19:13:07 2021
-
-@author: georg
-"""
-
 import unittest
 import numpy as np
 from scipy import special

@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jan  6 21:27:08 2022
-
-@author: georg
-"""
-
 from pycm import distribution_matching as dm
 from pycm import utils, it
 import numpy as np

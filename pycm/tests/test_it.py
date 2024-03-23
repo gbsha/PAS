@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 10 08:27:28 2021
-
-@author: georg
-"""
-
 from pycm import channel, it, source, modem
 from pycm.fec import Uncoded
 from pycm.modem import ASK

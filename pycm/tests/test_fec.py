@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May 11 11:53:20 2021
-
-@author: georg
-"""
-
 from pycm.fec import RM, Hamming, FEC, SPC, Repetition
 import unittest
 import numpy as np
@@ -65,7 +57,7 @@ class TestFEC(unittest.TestCase):
             u = utils.de2bi(w, hfec.k).reshape(-1)
             c = hfec.encode(u)
             x = ASK.mapbits(modem.demux(c, m), cstll)
-            uhat = hfec.decode_sd(x)
+            uhat = hfec.decode_sd(-x)
             self.assertTrue(np.all(u == uhat))
             
     def test_SPC_decode_sd(self):

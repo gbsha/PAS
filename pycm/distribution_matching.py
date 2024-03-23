@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jan  6 21:26:44 2022
-
-@author: georg
-"""
 import numpy as np
 from pycm import utils
 
