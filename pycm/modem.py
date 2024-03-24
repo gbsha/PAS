@@ -1,7 +1,7 @@
 import numpy as np
 import scipy
 import scipy.stats
-import collections
+from collections.abc import Iterable
 from pycm import utils
 
 
@@ -19,6 +19,8 @@ class ASK():
         whichlabel : str, optional
             Identifier for binary label of signal points. Supported are 'natural'
             and 'gray', which is the default.
+        pX : ArrayLike, optional.
+            Probability distribution on the signal points. Default is uniform.
 
         Returns
         -------
@@ -42,7 +44,22 @@ class ASK():
         return np.sum(self.pX * self.alphabet**2)
         
     @staticmethod
-    def get_label(m, whichlabel):
+    def get_label(m: int, whichlabel: str):
+        """
+        Binary label of constellation.
+
+        Parameters
+        ----------
+        m : int
+            Number of bitlevels.        
+        whichlabel : str
+            Specifies label. Options are 'gray' and 'natural'.
+        
+        Returns
+        -------
+        label : (2**m, m) ndarray
+            ith row label[i] is the (m,) label of the ith signal point.
+        """
         if whichlabel == 'gray':
             if m == 1:
                 label = np.array([[0],[1]], dtype='uint8')
@@ -54,20 +71,43 @@ class ASK():
                 second_half = np.hstack((np.ones((tmp,1), dtype='uint8'), np.flipud(label_n)))
                 label = np.vstack((first_half, second_half))
                 return label
-            
         elif whichlabel == 'natural':
             d = np.array(range(2**m))
             power = 2**np.arange(m);
             label = np.floor((d[:,None]%(2*power))/power)
             label = np.array(label[:,::-1], dtype='uint8')
             return label
+        else:
+            raise ValueError(f"whichlabel = {whichlabel} not supported, options are 'gray' and 'natural'")
     
     @staticmethod
-    def demapbits(y, cstll, noise_power=1, decision='SD'):
+    def demapbits(y, cstll, noise_power : float = 1., decision : str = 'SD'):
+        """
+        Demap bits from noisy channel output.
+
+        Parameters
+        ----------
+        y : (n,) ndarray
+            Noisy channel output. Assumed to be x + z, where x is
+            the transmitted signal with values in cstll.alphabet and
+            where z is a Gaussian noise signal with variance noise_power.
+        cstll : ASK constellation
+        noise_power : float, optional
+            The noise signal variance. Default is 1.
+        decision : str, optional
+            Decision type options are 'SD' (soft decision) and 'HD' (hard decision).
+            Default is 'SD'.
+
+        Returns
+        -------
+        decision : (n, m) ndarray
+            'SD': soft bits
+            'HD': bits 
+        """
         sigma = np.sqrt(noise_power)
         M, m = cstll.label.shape
         n = 1
-        if isinstance(y, collections.Iterable):
+        if isinstance(y, Iterable):
             n = len(y)
         llrs = np.zeros((n, m))
     
@@ -87,11 +127,54 @@ class ASK():
 
     @staticmethod
     def mapbits(bits, cstll):
+        """
+        Map bits to signal points.
+
+        Parameters
+        ----------
+        bits : (n, m) ndarray
+        cstll : ASK constellation object.
+
+        Returns
+        -------
+        x : (n,) ndarray
+            Signal with signal point in cstll.alphabet.
+        """
         return cstll.alphabet[cstll.label2idx[utils.bi2de(bits)]]
     
 
 def demux(bits, bits_per_symbol):
+    """
+    Serial to parallel conversion of bitstream.
+
+    Parameters
+    ----------
+    bits : (m * n,) ndarray
+        Serial bits.
+    bits_per_symnbol : int=m
+        Number of label bits per signal point.
+
+    Returns
+    -------
+    parallel_bits : (n, m) ndarray
+        Example: demux(bits=[0, 0, 1, 1], bits_per_symbol=2)=[[0, 0],
+                                                              [1, 1]] 
+
+    """
     return bits.reshape(-1, bits_per_symbol)
 
 def mux(bits):
+    """
+    Parallel to serial conversion of bitstream
+
+    Parameters
+    ----------
+    bits : (n, m) ndarray
+    
+    Returns
+    -------
+    serial_bits : (n * m,) ndarray
+        Example: mux(bits=[[0, 0],
+                           [1, 1]]) = [0, 0, 1, 1]
+    """
     return bits.reshape(-1)

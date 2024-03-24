@@ -1,5 +1,5 @@
 import numpy as np
-import collections
+from collections.abc import Iterable
 import copy
 
 
@@ -12,7 +12,7 @@ def bi2de(bits):
 
 def de2bi(idx, m):
     _idx = copy.deepcopy(idx)
-    if not isinstance(_idx, collections.Iterable):
+    if not isinstance(_idx, Iterable):
         _idx = np.array([_idx])
     n = len(_idx)
     k = np.arange(m)

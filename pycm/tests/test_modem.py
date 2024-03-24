@@ -7,8 +7,8 @@ import numpy as np
 class TestModem(unittest.TestCase):
     
     def test_ASK(self):
-        pass
-    
+        self.assertRaises(ValueError, ASK.get_label, m=1, whichlabel="luxury")
+
     def test_mapbits_demapbits(self):
         n = 10
         ms = [1, 2, 3, 4]

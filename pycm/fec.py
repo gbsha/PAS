@@ -1,17 +1,40 @@
 import numpy as np
 from pycm import utils
 import sympy
-
-
-def decide(softbits):
-    return (softbits < 0).astype(np.uint8)
     
 
 class Uncoded():
+    """
+    Rate 1 FEC (uncoded) methods.
+    """
     
     @staticmethod
     def decode(softbits):
+        """
+        Calculate hard decision (HD) from softbits.
+        This corresponds to soft decision (SD) decoding
+        of a rate 1 FEC (uncoded).
+
+        Parameters
+        ----------
+        softbits : ndarray
+            log(p0/p1) softbits.
+
+        Returns
+        -------
+        bits : ndarray
+            nonnegative softbits are decided for 0 and negative softbits
+            are decided for 1.
+        """
         return (softbits < 0).astype(np.uint8)
+
+
+def hard_decide(softbits):
+    """
+    Alias to Uncoded.decode
+    """
+    return Uncoded.decode(softbits)
+
 
 
 def polarmatrix(m):
@@ -19,6 +42,9 @@ def polarmatrix(m):
 
 
 class RM():
+    """
+    Reed-Muller Code methods.
+    """
 
     @staticmethod
     def generator(m, r):
@@ -40,6 +66,9 @@ class RM():
         return 2**tmp
 
 class Hamming():
+    """
+    Hamming Code methods.
+    """
         
     @staticmethod
     def paritychecker(m, extended=False):        
@@ -49,13 +78,17 @@ class Hamming():
 
 
 class SPC():
+    """
+    Single Parity Check Code methods.
+    """
+
     @staticmethod
     def encode(u):
         return np.append(u, np.sum(u) % 2)
     
     @staticmethod
     def decode_sd(softbits):
-        chat = decide(softbits)
+        chat = hard_decide(softbits)
         if np.sum(chat) % 2 == 1:
             ierror = np.argmin(np.abs(softbits))
             chat[ierror] = (chat[ierror] + 1) % 2
@@ -68,6 +101,10 @@ class SPC():
     
 
 class Repetition():
+    """
+    Repetition Code methods.
+
+    """
     def __init__(self, n):
         self.n = n
     
@@ -80,7 +117,7 @@ class Repetition():
 
     @staticmethod
     def decode_hd(softbits):
-        chat = decide(softbits)
+        chat = hard_decide(softbits)
         n = len(chat)
         if np.sum(chat) <= n / 2.:
             u = 0
@@ -91,6 +128,16 @@ class Repetition():
 
 class FEC():
     def __init__(self, H):
+        """
+        Linear FEC constructor.
+        
+        Parameters
+        ----------
+        H : (n-k, n) ndarray
+            Binary parity check matrix of (n, k) code.
+            Each of  the n - k rows defines a parity check. 
+
+        """
         self.H = FEC.leftsystematic(H)
         self.QT, self.RTinv = FEC.get_QR(self.H)
         self.nk, self.n = self.H.shape
@@ -98,14 +145,33 @@ class FEC():
         
 
     def encode(self, u):
+        """
+        Systematically encode k bits.
+        """
         return np.append(u, self.parity(np.array(u)))
 
 
     def parity(self, u):
+        """
+        Calculate n - k parity bits for k information bits.
+        """
         return (u.dot(self.QT).dot(self.RTinv) % 2).astype(np.uint8)
         
     
     def decode_sd(self, softbits):
+        """
+        Soft-decision decoding.
+
+        Parameters
+        ----------
+        softbits : (n,) ndarray
+            log(p0/p1) softbits.
+
+        Returns
+        -------
+        info_bits : (k,) ndarray
+            Information bits of most probable systematic codeword.
+        """
         best_w = -1
         best_score = -np.inf
         for w in range(2**self.k):
@@ -129,6 +195,12 @@ class FEC():
 
     @staticmethod
     def leftsystematic(H):
+        """
+        Reorder columns of parity check matrix so as to obtain
+        a parity check matrix whose rightmost n - k columns are
+        linearly independent so that it can be used for leftsystematic
+        encoding.
+        """
         nk, n = H.shape
         if sympy.Matrix(H[:, -nk:]).rank() == nk:
             return H
