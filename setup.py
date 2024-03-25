@@ -8,5 +8,5 @@ setup(
     author_email="mail@georg-boecherer.de",
     packages=find_packages(include="pycm"),
     url="https://github.com/gbsha/PAS",
-    install_requires=['numpy >= 1.11.1'],
+    install_requires=['numpy <= 1.23'],
 )
