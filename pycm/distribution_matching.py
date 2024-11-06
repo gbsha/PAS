@@ -4,6 +4,21 @@ from pycm import utils
 
 class DM():
     def __init__(self, w, n):
+        """
+        Distribution Matcher (DM) class.
+
+        Parameters
+        ----------
+        w : ArrayLike
+            Array with weights. 
+            Example: for amplitudes [1., 3.], weights could be the amplitudes
+                squared, i.e., w = [1., 9.].
+        n : int
+            DM output length in number of symbols. Symbols take values in
+            0, 1,...,M - 1, where M = len(w).
+            Example: for weights w = [1., 9.], M = 2 and n is the number of
+                output length in bits.
+        """
         self.w = w
         self.n = n
         (self.all_types, 
@@ -51,6 +66,20 @@ class DM():
         return types, weights, logsizes, log2cumsizes
 
     def set_mcdm_rate(self, k_bits):
+        """
+        For requested number of input bits, update minimum cost DM (MCDM)
+        properties, including
+
+        mcdm_P : ndarray
+            Output distribution on weights w. Determines average weight
+            at output.
+
+        Parameters
+        ----------
+        k_bits : int
+            Number of input bits.
+        
+        """
         indices = np.arange(len(self.all_log2cumsizes))
         idx = self.all_log2cumsizes >= k_bits
         if not np.all(idx) and k_bits == np.log2(len(self.w))*self.n:
@@ -74,6 +103,20 @@ class DM():
         self.mcdm_P = self.mcdm_P / np.sum(self.mcdm_P)
 
     def set_ccdm_rate(self, k_bits):
+        """
+        For requested number of input bits, update constant composition DM (CCDM)
+        properties, including
+
+        ccdm_P : ndarray
+            Output distribution on weights w. Determines average weight
+            at output.
+
+        Parameters
+        ----------
+        k_bits : int
+            Number of input bits.
+        
+        """
         indices = np.arange(len(self.all_log2cumsizes))
         idx = self.all_logsizes / np.log(2) >= k_bits
         indices = indices[idx]
