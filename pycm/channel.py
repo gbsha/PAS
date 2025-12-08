@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def awgn(x, noise_power: float, seed: int = None):
     """
     Additive White Gaussian Noise (AWGN) channel.

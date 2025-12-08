@@ -6,9 +6,9 @@ import copy
 def bi2de(bits):
     _, m = bits.shape
     k = np.arange(m)
-    base = 2**k[::-1]
-    return np.sum(base*bits, 1)
-    
+    base = 2 ** k[::-1]
+    return np.sum(base * bits, 1)
+
 
 def de2bi(idx, m):
     _idx = copy.deepcopy(idx)
@@ -16,8 +16,8 @@ def de2bi(idx, m):
         _idx = np.array([_idx])
     n = len(_idx)
     k = np.arange(m)
-    base = 2**k[::-1]
-    
+    base = 2 ** k[::-1]
+
     bits = np.zeros((n, m), dtype=np.uint8)
     for j in range(m):
         t = _idx >= base[j]
@@ -83,14 +83,14 @@ def cartesian(arrays, out=None):
     if out is None:
         out = np.zeros([n, len(arrays)], dtype=dtype)
 
-    #m = n / arrays[0].size
-    m = int(n / arrays[0].size) 
-    out[:,0] = np.repeat(arrays[0], m)
+    # m = n / arrays[0].size
+    m = int(n / arrays[0].size)
+    out[:, 0] = np.repeat(arrays[0], m)
     if arrays[1:]:
         cartesian(arrays[1:], out=out[0:m, 1:])
         for j in range(1, arrays[0].size):
-        #for j in xrange(1, arrays[0].size):
-            out[j*m:(j+1)*m, 1:] = out[0:m, 1:]
+            # for j in xrange(1, arrays[0].size):
+            out[j * m : (j + 1) * m, 1:] = out[0:m, 1:]
     return out
 
 
@@ -110,8 +110,8 @@ def logmultinomial(ks):
 def multinomial(lst):
     res, i = 1, sum(lst)
     i0 = lst.index(max(lst))
-    for a in lst[:i0] + lst[i0+1:]:
-        for j in range(1,a+1):
+    for a in lst[:i0] + lst[i0 + 1 :]:
+        for j in range(1, a + 1):
             res *= i
             res //= j
             i -= 1

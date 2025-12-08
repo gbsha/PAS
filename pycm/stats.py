@@ -4,7 +4,7 @@ import scipy.optimize
 
 
 def pecdf(q, ne, n):
-    '''
+    """
     cumulative distribution function of random event probability Q, assuming
     uniform prior.
 
@@ -22,15 +22,17 @@ def pecdf(q, ne, n):
     float
         CDF(q; ne, n).
 
-    '''
-    assert ne <= n, f'The event cannot occur more often than the number of trials however, ne={ne} > n={n}'
+    """
+    assert (
+        ne <= n
+    ), f"The event cannot occur more often than the number of trials however, ne={ne} > n={n}"
     _q = max(q, 0)
     _q = min(q, 1)
-    return scipy.special.betainc(ne + 1, n- ne + 1, _q)
+    return scipy.special.betainc(ne + 1, n - ne + 1, _q)
 
 
 def credibility_interval(ne, n, credibility):
-    '''
+    """
     Calculate log-centered interval with desired credibility.
 
     Parameters
@@ -50,17 +52,23 @@ def credibility_interval(ne, n, credibility):
         center is the estimate ne/n. (lower, upper) is the interval log-centerd
         around ne/n with the desired credibility.
 
-    '''
+    """
     _ne = max(1, ne)
     qhat = _ne / n
+
     def fun(r):
-        return pecdf(qhat*np.sqrt(r), _ne, n) - pecdf(qhat / np.sqrt(r), _ne, n) - credibility
+        return (
+            pecdf(qhat * np.sqrt(r), _ne, n)
+            - pecdf(qhat / np.sqrt(r), _ne, n)
+            - credibility
+        )
+
     lower = 1
     assert fun(lower) < 0, 'something impossible happened ??;"++*%$'
     upper = 2
     while fun(upper) <= 0:
         upper *= 2
-    
+
     res = scipy.optimize.root_scalar(fun, bracket=(1, upper))
     r = res.root
-    return qhat,  qhat / np.sqrt(r), qhat*np.sqrt(r)
+    return qhat, qhat / np.sqrt(r), qhat * np.sqrt(r)

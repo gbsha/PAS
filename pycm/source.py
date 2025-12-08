@@ -43,7 +43,7 @@ def constant_amplitude_composition(amplitude_composition, amplitude_label):
         of each value determines the distribution of the amplitude bits.
     amplitude_label : (2**(m-1), m-1) ndarray
         Binary amplitude label.
-    
+
     Returns
     -------
     bits : (n, m) ndarray
@@ -76,6 +76,5 @@ def ntype(typ):
     composition = np.zeros(n, dtype=np.uint8)
     cumtyp = np.concatenate(([0], np.cumsum(typ)))
     for j in range(len(typ)):
-        composition[cumtyp[j]:cumtyp[j+1]] = j
+        composition[cumtyp[j] : cumtyp[j + 1]] = j
     return np.random.permutation(composition)
-    
