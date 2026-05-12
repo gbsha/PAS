@@ -24,12 +24,11 @@ author = {Georg Böcherer}
 
 ## Python Package
 
-Install the python package `pycm`.
-1. with numpy already installed, try
-    ```
-    pip install --no-deps -e git+https://github.com/gbsha/PAS.git#egg=pycm
-    ```
-2. if option 1. does not work, try
-    ```
-    pip install -e git+https://github.com/gbsha/PAS.git#egg=pycm
-    ```
+Install the python package `pycm`:
+```
+pip install -e git+https://github.com/gbsha/PAS.git#egg=pycm
+```
+Or, from a local clone:
+```
+pip install -e /path/to/PAS
+```

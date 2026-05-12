@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pycm"
+version = "0.1"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+]
